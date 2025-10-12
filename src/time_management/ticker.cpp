@@ -1,0 +1,56 @@
+#include "ticker.h"
+
+namespace time_m {
+    void Ticker::Start() {
+        net::dispatch(strand_, [self = shared_from_this()] {
+            self->last_tick_ = Clock::now();
+            self->ScheduleTick();
+        });
+    }
+
+    // функция для остановки таймера
+    void Ticker::Stop() {
+        net::dispatch(strand_,[self = shared_from_this()]()mutable{
+            self->run_timer_ = false;
+            self->timer_.cancel();
+        });
+    }
+
+    void Ticker::ScheduleTick() {
+        assert(strand_.running_in_this_thread());
+        timer_.expires_after(period_);
+
+        timer_.async_wait([self = shared_from_this()](sys::error_code ec) {
+                self->OnTick(ec);
+            });
+        }
+
+    void Ticker::OnTick(sys::error_code ec) {
+        using namespace std::chrono;
+        assert(strand_.running_in_this_thread());
+
+        // Проверяем, была ли операция отменена
+        if (ec == boost::asio::error::operation_aborted) {
+            // Таймер был отменен - останавливаемся
+            return;
+        }  
+
+        if (!ec) {
+            auto this_tick = Clock::now();
+            auto delta = duration_cast<milliseconds>(this_tick - last_tick_);
+            last_tick_ = this_tick;
+
+            try {
+                // Вызов обработчика
+                handler_(delta);
+            } catch (...) {
+                throw;
+            }
+
+            if(run_timer_){
+                ScheduleTick();
+            }
+        }
+    }
+
+}
