@@ -22,4 +22,4 @@ Dogs Story.
 
 Присоединяйтесь к команде Dogs Story и помогите вернуть потерянные вещи их владельцам! Вместе мы сделаем город безопаснее и добрее! 🐕✨
 
-Собрать проект можно с помощью скрипта [build_script.sh](https://github.com/SergeyAlexeevich/Game_Dog_Story/blob/main/build_script), а запустить с помощью [run_server](https://github.com/SergeyAlexeevich/Game_Dog_Story/blob/main/run_server)
+Собрать проект можно с помощью скрипта [build_script.sh](https://github.com/SergeyAlexeevich/Game_Dog_Story/blob/main/build_script), а запустить с помощью [run_server](https://github.com/SergeyAlexeevich/Game_Dog_Story/blob/main/run_server).
